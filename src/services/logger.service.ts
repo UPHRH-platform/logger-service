@@ -1,12 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import * as fs from 'fs';
+import { Response } from "../interfaces/common.interface";
 
 @Injectable()
 export class LoggerService {
-    private readonly logFilePath: string = "../logs/events.log";
+    private readonly logFilePath: string = "./logs/events.log";
 
-    public logEvent(event: any): void {
-        const logEntry = JSON.stringify(event);
-        fs.appendFileSync(this.logFilePath, `${logEntry}\n`);   
+    public logEvent(event: any): Response {
+        try {
+            const logEntry = JSON.stringify(event);
+            fs.appendFileSync(this.logFilePath, `${logEntry}\n`);  
+            return { success: true, message: 'Event logged successfully' };
+        } catch(error) {
+            return { success: false, message: 'Failed to log event' };
+        }
     }
 }
